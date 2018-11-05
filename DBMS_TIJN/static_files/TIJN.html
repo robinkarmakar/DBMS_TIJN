@@ -1,15 +1,3 @@
-<!--
-
-Web frontend for petsapp
-
-COGS121 by Philip Guo
-https://github.com/pgbovine/COGS121
-
-Start ../server.js and then visit this URL to view this webpage:
-
-http://localhost:3000/petsapp.html
-
--->
 
 <html>
 <head>
@@ -90,17 +78,105 @@ $(document).ready(() => {
   <h1>Welcome to TIJN!</h1>
 
   Name: <input id="nameBox" type="text" size="20"/>
-  <button id="readButton">Get BankId</button>
+  <button id="readButton">Get User Bank</button>
   <button id="allBanksButton">Get all Banks</button>
 
   <div id="idDiv"></div>
 
+  <hr/>
+  Name: <input id="RnameBox" type="text" size="20"/>
+  SSN: <input id="SSNBox" type="text" size="20"/>
+  <button id="removeUserBank">Remove user bank</button>
+  <hr/>
+
+  <hr/>
+  BankId: <input id="BankID"" type="text" size="20"/>
+  BankNumber: <input id="BANumber" type="text" size="20"/>
+  SSN: <input id="SSNBox" type="text" size="20"/>
+  <button id="addUserBank">Add user bank</button>
+  <hr/>
+
+  <hr/>
+  Phone: <input id="RPnameBox" type="text" size="20"/>
+  SSN: <input id="SSNBox" type="text" size="20"/>
+  <button id="removeUserPhone">Remove user phone</button>
+  <hr/>
+
+  <hr/>
+  Phone: <input id="APnameBox" type="text" size="20"/>
+  SSN: <input id="SSNBox" type="text" size="20"/>
+  <button id="addUserPhone">Add user Phone</button>
+  <hr/>
+
+  <hr/>
+  SSN: <input id="PhonenameBox" type="text" size="20"/>
+  <button id="UserPhoneButton">Get user Phones</button>
+  <hr/>
+
+  <hr/>
+  Email: <input id="REnameBox" type="text" size="20"/>
+  SSN: <input id="SSNBox" type="text" size="20"/>
+  <button id="removeUserPhone">Remove user email</button>
+  <hr/>
+
+  <hr/>
+  Email: <input id="AEnameBox" type="text" size="20"/>
+  SSN: <input id="SSNBox" type="text" size="20"/>
+  <button id="addUserPhone">Add user email</button>
+  <hr/>
+
+  <hr/>
+  Name: <input id="EmailnameBox" type="text" size="20"/>
+  <button id="allUserPhoneButton">Get users email</button>
+
+  <hr/>
+
+
+  <hr/>
+  Memo: <input id="insertMemoBx" type="text" size="20"/>
+  SSN: <input id="insertSSNBx" type="text" size="20"/>
+  Name: <input id="nameBx" type="text" size="20"/>
+  Amount: <input id="AmountBx" type="text" size="20"/>
+
+  <button id="SendButton">Send Money</button>
+
+  <hr/>
+  Memo: <input id="insertMemoBx" type="text" size="20"/>
+  SSN: <input id="insertSSNBx" type="text" size="20"/>
+  Name: <input id="nameBx" type="text" size="20"/>
+  Amount: <input id="AmountBx" type="text" size="20"/>
+
+  <button id="RecieveButton">Request Money</button>
+
+  <hr/>
+  Date1: <input id="Date1" type="text" size="20"/>
+  Date2: <input id="Date2" type="text" size="20"/>
+  <button id="RecieveButton">Search Ledger of Transactions by date</button>
+
+  <hr/>
+
+  <hr/>
+  Account: <input id="SSNAccount" type="text" size="20"/>
+  <button id="AccountButton">Search Ledger by Accoiunt</button>
+
+  <hr/>
+
+  <hr/>
+  Transaction: <input id="Transaction" type="text" size="20"/>
+  <button id="TransButton">Search Ledger by Transaction</button>
+
+  <hr/>
+
 
   <hr/>
   Name: <input id="insertNameBox" type="text" size="20"/>
-  Id: <input id="insertIdBox" type="text" size="20"/>
-  <button id="insertButton">Insert into Bank Table</button>
-
+  SSN: <input id="insertSSNBox" type="text" size="20"/>
+  Phone: <input id="insertPhoneBox" type="text" size="20"/>
+  Email: <input id="insertEmailBox" type="text" size="20"/>
+  Balance: <input id="insertBalanceBox" type="text" size="20"/>
+  BankId: <input id="insertBankBox" type="text" size="20"/>
+  BANumber: <input id="insertBankNumberBox" type="text" size="20"/>
+  <button id="insertUsersButton">Insert into Users Users Table</button>
   <hr/>
   <div id ="status"></div>
 </body>
