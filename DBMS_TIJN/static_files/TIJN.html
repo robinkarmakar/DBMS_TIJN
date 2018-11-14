@@ -1,278 +1,603 @@
 
+
 <html>
+
 <head>
+
   <title>TIJN</title>
+
+
 
   <script src="jquery-3.3.1.min.js"></script>
 
+
+
   <script type="text/javascript">
 
+      let i;
+
       // jQuery convention for running when the document has been fully loaded:
+
       $(document).ready(() => {
+
           $('#readButton').click(() => {
               const requestURL = 'bank/' + $('#nameBox').val();
               console.log('making ajax request to:', requestURL);
 
-              // From: http://learn.jquery.com/ajax/jquery-ajax-methods/
-              // Using the core $.ajax() method since it's the most flexible.
-              // ($.get() and $.getJSON() are nicer convenience functions)
+
               $.ajax({
-                  // all URLs are relative to http://localhost:3000/
+
                   url: requestURL,
                   type: 'GET',
                   dataType : 'json', // this URL returns data in JSON format
                   success: (data) => {
-                      console.log('You received some data!', data);
 
-                      if (data.name && data.id) {
+                      console.log('You received some data!', data);
+                      let elements = $();
+                      if (data) {
                           $('#status').html('Successfully fetched data at URL: ' + requestURL);
-                          $('#idDiv').html('Bank Name is ' + data.name);
+                          for (i=0; i< data.length; i++) {
+                              elements = elements.add('<div>Bank ID is ' + data[i].BankID + ' and Bank Number is ' + data[i].BANumber +'</div>');
+
+                          }
+                          $('body').append(elements);
 
                       } else {
-                          $('#status').html('Error: could not find user at URL: ' + requestURL);
-                          // clear the display
-                          $('#idDiv').html('');
 
+                          $('#status').html('Error: could not find user at URL: ' + requestURL);
+                          $('#idDiv').html('');
                       }
                   },
               });
           });
 
+
+
           $('#allBanksButton').click(() => {
+
+
+
               $.ajax({
+
                   url: 'bankaccounts',
+
                   type: 'GET',
+
                   dataType : 'json',
+
                   success: (data) => {
+
                       console.log('You received some data!', data);
+
                       $('#status').html('All banks: ' + data);
+
                   },
+
               });
+
           });
+
+
 
           $('#insertButton').click(() => {
+
               $.ajax({
+
                   // all URLs are relative to http://localhost:3000/
+
                   url: 'bank',
+
                   type: 'POST', // <-- this is POST, not GET
+
                   data: {
+
                       name: $('#insertNameBox').val(),
+
                       id: $('#insertIdBox').val()
+
                   },
+
                   success: (data) => {
+
                       $('#status').html(data.message);
+
                   }
+
               });
+
           });
 
+
+
           $('#removeUserBank').click(() => {
+
               $.ajax({
+
                   // all URLs are relative to http://localhost:3000/
+
                   url: 'bankRemove',
+
                   type: 'POST', // <-- this is POST, not GET
+
                   data: {
+
                       name: $('#RnameBox').val(),
+
                       ssn: $('#SSNBox').val()
+
                   },
+
                   success: (data) => {
+
                       $('#status').html(data.message);
+
                   }
+
               });
+
           });
+
+
+
 
 
           $('#addUserBank').click(() => {
+
               $.ajax({
+
                   // all URLs are relative to http://localhost:3000/
+
                   url: 'bankAdd',
+
                   type: 'POST', // <-- this is POST, not GET
+
                   data: {
+
                       SSN : $('#SSNBox').val(),
+
                       id: $('#BankID').val(),
+
                       number: $('#BANumber').val()
+
                   },
+
                   success: (data) => {
+
                       $('#status').html(data.message);
+
                   }
+
               });
+
           });
+
+
+
 
 
           $('#removeUserPhone').click(() => {
+
               $.ajax({
+
                   // all URLs are relative to http://localhost:3000/
+
                   url: 'removeUserPhone',
+
                   type: 'POST', // <-- this is POST, not GET
+
                   data: {
+
                       ssn : $('#SSNBox').val(),
+
                       phone: $('#RPnameBox').val()
+
                   },
+
                   success: (data) => {
+
                       $('#status').html(data.message);
+
                   }
+
               });
+
           });
+
+
+
 
 
           $('#addUserPhone').click(() => {
+
               $.ajax({
+
                   // all URLs are relative to http://localhost:3000/
+
                   url: 'addUserPhone',
+
                   type: 'POST', // <-- this is POST, not GET
+
                   data: {
+
                       ssn : $('#SSNBox').val(),
+
                       phone: $('#APnameBox').val()
+
                   },
+
                   success: (data) => {
+
                       $('#status').html(data.message);
+
                   }
+
               });
+
           });
+
+
+
 
 
           $('#getUserPhones').click(() => {
+
               const requestURL = 'getUserPhone/' + $('#SSN').val();
+
               console.log('making ajax request to:', requestURL);
 
+
+
               $.ajax({
+
                   // all URLs are relative to http://localhost:3000/
+
                   url: requestURL,
+
                   type: 'GET',
+
                   dataType:'json',
 
+
+
                   success: (data) => {
+
                       console.log('You received some data!', data);
 
+
+
                       if (data.name && data.phone) {
+
                           $('#status').html('Successfully fetched data at URL: ' + requestURL);
+
                           $('#idDiv').html('User Name is ' + data.name + ' Phone Number is' + data.phone);
 
+
+
                       } else {
+
                           $('#status').html('Error: could not find user at URL: ' + requestURL);
+
                           // clear the display
+
                           $('#idDiv').html('');
 
+
+
                       }
+
                   }
+
               });
+
           });
+
+
+
 
 
           $('#removeUserEmail').click(() => {
+
               $.ajax({
+
                   // all URLs are relative to http://localhost:3000/
+
                   url: 'removeUserEmail',
+
                   type: 'POST', // <-- this is POST, not GET
+
                   data: {
+
                       ssn : $('#SSNBox').val(),
+
                       Email: $('#REnameBox').val()
+
                   },
+
                   success: (data) => {
+
                       $('#status').html(data.message);
+
                   }
+
               });
+
           });
+
+
+
 
 
           $('#addUserEmail').click(() => {
+
               $.ajax({
+
                   // all URLs are relative to http://localhost:3000/
+
                   url: 'addUserEmail',
+
                   type: 'POST', // <-- this is POST, not GET
+
                   dataType: 'json',
+
                   success: (data) => {
+
                       console.log('You received some data!', data);
 
+
+
                       if (data.name && data.email) {
+
                           $('#status').html('Successfully fetched data at URL: ' + requestURL);
+
                           $('#idDiv').html('User name is ' + data.name + 'Phone is: ' + data.email);
 
+
+
                       } else {
+
                           $('#status').html('Error: could not find user at URL: ' + requestURL);
+
                           // clear the display
+
                           $('#idDiv').html('');
 
+
+
                       }
+
                   }
+
               });
+
           });
 
 
+
+
+
           $('#getUserEmails').click(() => {
+
               const requestURL = 'getUsersEmail/' + $('#SSN').val();
+
+              console.log('making ajax request to:', requestURL);
+
+
+
+              $.ajax({
+
+                  // all URLs are relative to http://localhost:3000/
+
+                  url: requestURL,
+
+                  type: 'GET', // <-- this is POST, not GET
+
+                  data: {
+
+                      ssn : $('#SSNBox').val()
+
+                  },
+
+                  success: (data) => {
+
+                      $('#status').html(data.message);
+
+                  }
+
+              });
+
+          });
+
+
+
+
+
+          $('#sendButton').click(() => {
+
+              $.ajax({
+
+                  // all URLs are relative to http://localhost:3000/
+
+                  url: 'sendButton',
+
+                  type: 'POST', // <-- this is POST, not GET
+
+                  data: {
+
+                      ssn : $('#SSNBox').val(),
+
+                      memo: $('#Memo').val(),
+
+                      name: $('#Name').val(),
+
+                      amount: $('#Amount').val()
+
+                  },
+
+                  success: (data) => {
+
+                      $('#status').html(data.message);
+
+                  }
+
+              });
+
+          });
+
+
+
+
+
+          $('#receiveButton').click(() => {
+
+              $.ajax({
+
+                  // all URLs are relative to http://localhost:3000/
+
+                  url: 'receiveButton',
+
+                  type: 'POST', // <-- this is POST, not GET
+
+                  data: {
+
+                      ssn : $('#SSNBox').val(),
+
+                      memo: $('#Memo').val(),
+
+                      name: $('#Name').val(),
+
+                      amount: $('#Amount').val()
+
+                  },
+
+                  success: (data) => {
+
+                      $('#status').html(data.message);
+
+                  }
+
+              });
+
+          });
+
+
+
+          $('#searchButton').click(() => {
+
+
+
+              const requestURL = 'searchDate/' + $('#Date1').val() + '/' +  $('#Date2').val();
+
+              console.log('making ajax request to:', requestURL);
+
+
+
+              $.ajax({
+
+                  // all URLs are relative to http://localhost:3000/
+
+                  url: requestURL,
+
+                  type: 'GET',
+
+                  dataType: 'json',
+
+                  success: (data) => {
+
+                      console.log('You received some data!', data);
+
+
+
+                      if (data.Id && data.type && data.amount && data.time && data.memo) {
+
+                          $('#status').html('Successfully fetched data at URL: ' + requestURL);
+
+                          $('#idDiv').html('Transaction is: ' + data.type + ' Id is: +' + data.Id + ' Amount is: ' + dta.amount + ' Time recorded: ' + data.time + ' Memo is: ' + data.memo);
+
+
+
+                      } else {
+
+                          $('#status').html('Error: could not find user at URL: ' + requestURL);
+
+                          // clear the display
+
+                          $('#idDiv').html('');
+
+
+
+                      }
+
+                  }
+
+              });
+
+          });
+
+
+
+
+
+
+
+          $('#accountButton').click(() => {
+
+              const requestURL = 'searchAccount/' + $('#SSN').val();
               console.log('making ajax request to:', requestURL);
 
               $.ajax({
                   // all URLs are relative to http://localhost:3000/
                   url: requestURL,
                   type: 'GET', // <-- this is POST, not GET
-                  data: {
-                      ssn : $('#SSNBox').val()
-                  },
+                  datatype: 'json',
+
                   success: (data) => {
-                      $('#status').html(data.message);
+                      console.log('You received some data!', data);
+
+                      if (data.Name) {
+                          $('#status').html('Successfully fetched data at URL: ' + requestURL);
+                          $('#idDiv').html('User name is: ' + data.Name);
+
+                      } else {
+
+                          $('#status').html('Error: could not find user at URL: ' + requestURL);
+                          $('#idDiv').html('');
+
+
+
+                      }
+
                   }
+
               });
+
           });
 
 
-          $('#sendButton').click(() => {
-              $.ajax({
-                  // all URLs are relative to http://localhost:3000/
-                  url: 'sendButton',
-                  type: 'POST', // <-- this is POST, not GET
-                  data: {
-                      ssn : $('#SSNBox').val(),
-                      memo: $('#Memo').val(),
-                      name: $('#Name').val(),
-                      amount: $('#Amount').val()
-                  },
-                  success: (data) => {
-                      $('#status').html(data.message);
-                  }
-              });
-          });
 
+          $('#transButton').click(() => {
 
-          $('#receiveButton').click(() => {
-              $.ajax({
-                  // all URLs are relative to http://localhost:3000/
-                  url: 'receiveButton',
-                  type: 'POST', // <-- this is POST, not GET
-                  data: {
-                      ssn : $('#SSNBox').val(),
-                      memo: $('#Memo').val(),
-                      name: $('#Name').val(),
-                      amount: $('#Amount').val()
-                  },
-                  success: (data) => {
-                      $('#status').html(data.message);
-                  }
-              });
-          });
-
-          $('#searchButton').click(() => {
-
-              const requestURL = 'searchDate/' + $('#Date1').val() + '/' +  $('#Date2').val();
+              const requestURL = 'searchTransaction/' + $('#TransactionID').val();
               console.log('making ajax request to:', requestURL);
 
+
               $.ajax({
-                  // all URLs are relative to http://localhost:3000/
                   url: requestURL,
                   type: 'GET',
                   dataType: 'json',
                   success: (data) => {
+                      let elements = $();
                       console.log('You received some data!', data);
+                      if (data) {
 
-                      if (data.Id && data.type && data.amount && data.time && data.memo) {
                           $('#status').html('Successfully fetched data at URL: ' + requestURL);
-                          $('#idDiv').html('Transaction is: ' + data.type + ' Id is: +' + data.Id + ' Amount is: ' + dta.amount + ' Time recorded: ' + data.time + ' Memo is: ' + data.memo);
+                          for (i=0; i< data.length; i++) {
+                              elements = elements.add('<div>Bank ID is ' + data[i].STid + ' Amount is ' + data[i].Amount +'Time recorded' + data[i].Date +'Memo is: ' +data[i].Memo +'</div>');
+                          }
+                          $('body').append(elements);
 
                       } else {
                           $('#status').html('Error: could not find user at URL: ' + requestURL);
-                          // clear the display
                           $('#idDiv').html('');
-
                       }
                   }
               });
@@ -280,196 +605,280 @@
 
 
 
-      $('#accountButton').click(() => {
 
 
-          const requestURL = 'searchAccount/' + $('#SSN').val();
-          console.log('making ajax request to:', requestURL);
-
-      $.ajax({
-          // all URLs are relative to http://localhost:3000/
-          url: requestURL,
-          type: 'GET', // <-- this is POST, not GET
-          datatype: 'json',
-          success: (data) => {
-              console.log('You received some data!', data);
-
-              if (data.name && data.id) {
-                  $('#status').html('Successfully fetched data at URL: ' + requestURL);
-                  $('#idDiv').html('Transaction is: ' + data.type + ' Id is: +' + data.transactionId + ' Amount is: ' + dta.amount + ' Time recorded: ' + data.time + ' Memo is: ' + data.memo);
-
-              } else {
-                  $('#status').html('Error: could not find user at URL: ' + requestURL);
-                  // clear the display
-                  $('#idDiv').html('');
-
-              }
-          }
-      });
-      });
-
-      $('#transButton').click(() => {
-
-          const requestURL = 'searchTransaction/' + $('#TransactionID').val();
-          console.log('making ajax request to:', requestURL);
+          $('#insertUserButton').click(() => {
 
               $.ajax({
+
                   // all URLs are relative to http://localhost:3000/
-                  url: requestURL,
-                  type: 'GET',
-                  dataType: 'json',
-                  success: (data) => {
-                      console.log('You received some data!', data);
 
-                      if (data.transactionId && data.type && data.amount && data.time && data.memo) {
-                          $('#status').html('Successfully fetched data at URL: ' + url);
-                          $('#idDiv').html('Transaction is: ' + data.type + ' Id is: +' + data.transactionId + ' Amount is: ' + dta.amount + ' Time recorded: ' + data.time + ' Memo is: ' + data.memo);
-
-                      } else {
-                          $('#status').html('Error: could not find user at URL: ' + requestURL);
-                          // clear the display
-                          $('#idDiv').html('');
-
-                      }
-                  }
-              });
-          });
-
-
-      $('#insertUserButton').click(() => {
-              $.ajax({
-                  // all URLs are relative to http://localhost:3000/
                   url: 'insertUser',
+
                   type: 'POST', // <-- this is POST, not GET
+
                   data: {
+
                       ssn : $('#SSN').val(),
+
                       memo: $('#Memo').val(),
+
                       name: $('#Name').val(),
+
                       balance: $('#Balance').val(),
+
                       email: $('#Email').val(),
+
                       phone: $('#Phone').val(),
+
                       bankId: $('#BankID').val(),
+
                       bankNumber: $('#BankNumber').val()
 
+
+
                   },
+
                   success: (data) => {
+
                       $('#status').html(data.message);
+
                   }
+
               });
+
           });
+
           // define a generic Ajax error handler:
+
           // http://api.jquery.com/ajaxerror/
+
           $(document).ajaxError(() => {
+
               $('#status').html('Error: unknown ajaxError!');
+
           });
+
+
 
       });
+
   </script>
 
+
+
 </head>
+
 <body>
+
 <h1>Welcome to TIJN!</h1>
+<input type="button" value="Reload Page" onClick="document.location.reload(true)">
+
 
 Name: <input id="nameBox" type="text" size="20"/>
+
 <button id="readButton">Get User Bank</button>
+
 <button id="allBanksButton">Get all Banks</button>
+
+
 
 <div id="idDiv"></div>
 
+
+
 <hr/>
+
 Name: <input id="RnameBox" type="text" size="20"/>
+
 SSN: <input id="SSNBox" type="text" size="20"/>
+
 <button id="removeUserBank">Remove user bank</button>
-<hr/>
 
 <hr/>
+
+
+
+<hr/>
+
 BankId: <input id="BankID"" type="text" size="20"/>
+
 BankNumber: <input id="BANumber" type="text" size="20"/>
+
 SSN: <input id="SSNBox" type="text" size="20"/>
+
 <button id="addUserBank">Add user bank</button>
-<hr/>
 
 <hr/>
+
+
+
+<hr/>
+
 Phone: <input id="RPnameBox" type="text" size="20"/>
+
 SSN: <input id="SSNBox" type="text" size="20"/>
+
 <button id="removeUserPhone">Remove user phone</button>
-<hr/>
 
 <hr/>
+
+
+
+<hr/>
+
 Phone: <input id="APnameBox" type="text" size="20"/>
+
 SSN: <input id="SSNBox" type="text" size="20"/>
+
 <button id="addUserPhone">Add user phone</button>
-<hr/>
 
 <hr/>
+
+
+
+<hr/>
+
 SSN: <input id="SSN" type="text" size="20"/>
+
 <button id="getUserPhones">Get user's phones</button>
-<hr/>
 
 <hr/>
+
+
+
+<hr/>
+
 Email: <input id="REnameBox" type="text" size="20"/>
+
 SSN: <input id="SSNBox" type="text" size="20"/>
+
 <button id="removeUserEmail">Remove user email</button>
-<hr/>
 
 <hr/>
+
+
+
+<hr/>
+
 Email: <input id="AEnameBox" type="text" size="20"/>
+
 SSN: <input id="SSNBox" type="text" size="20"/>
+
 <button id="addUserEmail">Add user email</button>
-<hr/>
 
 <hr/>
+
+
+
+<hr/>
+
 Name: <input id="SSN" type="text" size="20"/>
+
 <button id="getUserEmails">Get user's emails</button>
 
-<hr/>
+
 
 <hr/>
+
+
+
+<hr/>
+
 Memo: <input id="insertMemoBx" type="text" size="20"/>
+
 SSN: <input id="insertSSNBx" type="text" size="20"/>
+
 Name: <input id="nameBx" type="text" size="20"/>
+
 Amount: <input id="AmountBx" type="text" size="20"/>
+
+
 
 <button id="sendButton">Send Money</button>
 
+
+
 <hr/>
+
 Memo: <input id="insertMemoBx" type="text" size="20"/>
+
 SSN: <input id="insertSSNBx" type="text" size="20"/>
+
 Name: <input id="nameBx" type="text" size="20"/>
+
 Amount: <input id="AmountBx" type="text" size="20"/>
+
+
 
 <button id="receiveButton">Request Money</button>
 
+
+
 <hr/>
+
 Date1: <input id="Date1" type="text" size="20"/>
+
 Date2: <input id="Date2" type="text" size="20"/>
+
 <button id="searchButton">Search Ledger of Transactions by date</button>
 
-<hr/>
+
 
 <hr/>
+
+
+
+<hr/>
+
 Account: <input id="SSN" type="text" size="20"/>
+
 <button id="accountButton">Search Ledger by Account</button>
 
-<hr/>
+
 
 <hr/>
+
+
+
+<hr/>
+
 Transaction: <input id="TransactionID" type="text" size="20"/>
+
 <button id="transButton">Search Ledger by Transaction</button>
 
-<hr/>
 
 
 <hr/>
+
+
+
+
+
+<hr/>
+
 Name: <input id="Name" type="text" size="20"/>
+
 SSN: <input id="SSN" type="text" size="20"/>
+
 Phone: <input id="Phone" type="text" size="20"/>
+
 Email: <input id="Email" type="text" size="20"/>
+
 Balance: <input id="Balance" type="text" size="20"/>
+
 BankId: <input id="Bank" type="text" size="20"/>
+
 BANumber: <input id="BankNumber" type="text" size="20"/>
+
 <button id="insertUserButton">Insert User</button>
+
 <hr/>
+
 <div id ="status"></div>
+
 </body>
+
 </html>
+
+

@@ -88,7 +88,7 @@ app.post('/bank', (req, res) => {
 //   http://localhost:3000/banks/1
 //   http://localhost:3000/banks/2
 //   http://localhost:3000/banks/3
-app.get('/banks/:bankid', (req, res) => {
+app.get('/bank/:bankid', (req, res) => {
   const nameToLookup = req.params.bankid; // matches ':bankid' above
 
   // db.all() fetches all results from an SQL query into the 'rows' variable:
@@ -102,7 +102,7 @@ app.get('/banks/:bankid', (req, res) => {
     (err, rows) => {
       console.log(rows);
       if (rows.length > 0) {
-        res.send(rows[0]);
+        res.send(rows);
       } else {
         res.send({}); // failed, so return an empty object instead of undefined
       }
@@ -111,7 +111,173 @@ app.get('/banks/:bankid', (req, res) => {
 });
 
 
+app.get('/getUserPhones/:ssn', (req, res) => {
+    const nameToLookup = req.params.ssn; // matches ':bankid' above
+
+    // db.all() fetches all results from an SQL query into the 'rows' variable:
+    db.all(
+        "SELECT * FROM ELECTRONIC_ADDRESS WHERE SSN=$ssn && Type='phone'",
+        // parameters to SQL query:
+        {
+            $ssn: nameToLookup
+        },
+        // callback function to run when the query finishes:
+        (err, rows) => {
+            console.log(rows);
+            if (rows.length > 0) {
+                res.send(rows);
+            } else {
+                res.send({}); // failed, so return an empty object instead of undefined
+            }
+        }
+    );
+});
+
 // start the server at URL: http://localhost:3000/
 app.listen(3000, () => {
   console.log('Server started at http://localhost:3000/');
 });
+
+app.get('/getUserEmails/:ssn', (req, res) => {
+    const nameToLookup = req.params.ssn; // matches ':bankid' above
+
+    // db.all() fetches all results from an SQL query into the 'rows' variable:
+    db.all(
+        "SELECT * FROM ELECTRONIC_ADDRESS WHERE SSN=$ssn && Type='email'",
+        // parameters to SQL query:
+        {
+            $ssn: nameToLookup
+        },
+        // callback function to run when the query finishes:
+        (err, rows) => {
+            console.log(rows);
+            if (rows.length > 0) {
+                res.send(rows);
+            } else {
+                res.send({}); // failed, so return an empty object instead of undefined
+            }
+        }
+    );
+});
+
+app.get('/searchAccount/:ssn', (req, res) => {
+    const nameToLookup = req.params.ssn; // matches ':bankid' above
+
+    // db.all() fetches all results from an SQL query into the 'rows' variable:
+    db.all(
+        "SELECT * FROM USER_ACCOUNT WHERE SSN=$ssn",
+        // parameters to SQL query:
+        {
+            $ssn: nameToLookup
+        },
+        // callback function to run when the query finishes:
+        (err, rows) => {
+            console.log(rows);
+            if (rows.length > 0) {
+                res.send(rows);
+            } else {
+                console.log("fail");
+                console.log(req.params.ssn);
+                res.send({}); // failed, so return an empty object instead of undefined
+            }
+        }
+    );
+});
+
+app.get('/searchTransaction/:ssn', (req, res) => {
+    const nameToLookup = req.params.ssn; // matches ':bankid' above
+
+    // db.all() fetches all results from an SQL query into the 'rows' variable:
+    db.all(
+        "SELECT * FROM SEND_TRANSACTION WHERE SSN=$ssn",
+        // parameters to SQL query:
+        {
+            $ssn: nameToLookup
+        },
+        // callback function to run when the query finishes:
+        (err, rows) => {
+            console.log(rows);
+            if (rows.length > 0) {
+                res.send(rows);
+            } else {
+                console.log(req.params.ssn);
+                console.log("fail");
+                res.send({}); // failed, so return an empty object instead of undefined
+            }
+        }
+    );
+});
+
+app.get('/searchDate/:date1/:date2', (req, res) => {
+    const date1 = req.params.date1;
+    const date2 = req.params.date2;
+
+    // db.all() fetches all results from an SQL query into the 'rows' variable:
+    db.all(
+        "SELECT * FROM SEND_TRANSACTION WHERE date1 < date && date2 > date",{
+        // parameters to SQL query,
+            $date1: date1,
+            $date2: date2
+        },
+        // callback function to run when the query finishes:
+        (err, rows) => {
+            console.log(rows);
+            if (rows.length > 0) {
+                res.send(rows[0]);
+            } else {
+                res.send({}); // failed, so return an empty object instead of undefined
+            }
+        }
+    );
+});
+
+
+app.use(bodyParser.urlencoded({extended: true})); // hook up with your app
+app.post('/removeUserBank', (req, res) => {
+    console.log(req.body);
+
+    db.run(
+        'DELETE FROM BANK_ACCOUNT WHERE BankID = $BankID ',
+        // parameters to SQL query:
+        {
+            $BankID: req.body.BankID
+        },
+        // callback function to run when the query finishes:
+        (err) => {
+            if (err) {
+                res.send({message: 'error in app.post(/bank)'});
+            } else {
+                res.send({message: 'successfully run app.post(/removeUserBank)'});
+            }
+        }
+    );
+
+    db.run(
+        'DELETE FROM HAS_ADDITIONAL WHERE SSN= $SSN ',
+        // parameters to SQL query:
+        {
+            $SSN: req.body.SSN
+        },
+        // callback function to run when the query finishes:
+        (err) => {
+            if (err) {
+                res.send({message: 'error in app.post(/bank)'});
+            } else {
+                res.send({message: 'successfully run app.post(/removeUserBank)'});
+            }
+        }
+    );
+
+    db.run(
+        "UPDATE USER_ACCOUNT SET BankID = '' and BANumber = '' ",
+        // callback function to run when the query finishes:
+        (err) => {
+            if (err) {
+                res.send({message: 'error in app.post(/removeBankAccount)'});
+            } else {
+                res.send({message: 'successfully run app.post(/removeBankAccount)'});
+            }
+        }
+    );
+});
+
