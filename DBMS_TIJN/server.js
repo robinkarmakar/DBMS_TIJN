@@ -117,49 +117,8 @@ app.get('/searchAccount/:ssn', (req, res) => {
         }
     );
 });
-app.get('/searchTransaction/:ssn', (req, res) => {
-    const nameToLookup = req.params.ssn; // matches ':bankid' above
-    // db.all() fetches all results from an SQL query into the 'rows' variable:
-    db.all(
-        "SELECT * FROM SEND_TRANSACTION WHERE SSN=$ssn",
-        // parameters to SQL query:
-        {
-            $ssn: nameToLookup
-        },
-        // callback function to run when the query finishes:
-        (err, rows) => {
-            console.log(rows);
-            if (rows.length > 0) {
-                res.send(rows);
-            } else {
-                console.log(req.params.ssn);
-                console.log("fail");
-                res.send({}); // failed, so return an empty object instead of undefined
-            }
-        }
-    );
-});
-app.get('/searchDate/:date1/:date2', (req, res) => {
-    const date1 = req.params.date1;
-    const date2 = req.params.date2;
-    // db.all() fetches all results from an SQL query into the 'rows' variable:
-    db.all(
-        "SELECT * FROM SEND_TRANSACTION WHERE date1 < date && date2 > date",{
-            // parameters to SQL query,
-            $date1: date1,
-            $date2: date2
-        },
-        // callback function to run when the query finishes:
-        (err, rows) => {
-            console.log(rows);
-            if (rows.length > 0) {
-                res.send(rows[0]);
-            } else {
-                res.send({}); // failed, so return an empty object instead of undefined
-            }
-        }
-    );
-});
+
+
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.post('/bankRemove', (req, res) => {
@@ -396,13 +355,15 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.post('/sendMoney', (req, res) => {
     console.log(req.body);
     db.run(
-        'INSERT INTO SEND_TRANSACTION(Amount,Date,Memo,cancelled,SSN,Identifier) VALUES($AMOUNT,0, $MEMO, 0, $SSN, $IDENTIFIER)',
+        'INSERT INTO SEND_TRANSACTION(Amount,Date,Month,Memo,cancelled,SSN,Identifier) VALUES($AMOUNT,$DATE, $MONTH,$MEMO, 0, $SSN, $IDENTIFIER)',
         // parameters to SQL query:
         {
             $SSN: req.body.ssn,
             $IDENTIFIER: req.body.identifier,
             $AMOUNT: req.body.amount,
-            $MEMO: req.body.memo
+            $MEMO: req.body.memo,
+            $DATE: req.body.date,
+            $MONTH: req.body.month
         },
         // callback function to run when the query finishes:
         (err) => {
@@ -485,6 +446,147 @@ app.post('/requestMoney', (req, res) => {
                 res.send(rows);
             } else {
                 res.send({}); // failed, so return an empty object instead of undefined
+            }
+        }
+    );
+});
+
+app.use(bodyParser.urlencoded({extended: true}));
+app.post('/statement', (req, res) => {
+    console.log(req.body);
+    db.all(
+        'SELECT SUM(AMOUNT) AS SUM FROM SEND_TRANSACTION WHERE SSN = $SSN',
+        // parameters to SQL query:
+        {
+            $SSN: req.body.ssn
+        },
+        // callback function to run when the query finishes:
+        (err,rows) => {
+            console.log(rows);
+            if (rows.length >0) {
+                res.send(rows);
+            } else {
+                res.send({});
+            }
+        }
+    );
+});
+app.use(bodyParser.urlencoded({extended: true}));
+app.post('/statementDate', (req, res) => {
+    console.log(req.body);
+    db.all(
+        'SELECT SUM(AMOUNT) AS SUM FROM SEND_TRANSACTION WHERE SSN = $SSN AND DATE = $DATE',
+        // parameters to SQL query:
+        {
+            $SSN: req.body.ssn,
+            $DATE: req.body.date
+        },
+        // callback function to run when the query finishes:
+        (err,rows) => {
+            console.log(rows);
+            if (rows.length >0) {
+                res.send(rows);
+            } else {
+                res.send({});
+            }
+        }
+    );
+});
+
+app.use(bodyParser.urlencoded({extended: true}));
+app.post('/statementMonthly', (req, res) => {
+    console.log(req.body);
+    db.all(
+        'SELECT SUM(AMOUNT) AS SUM FROM SEND_TRANSACTION WHERE SSN = $SSN AND MONTH = $MONTH',
+        // parameters to SQL query:
+        {
+            $SSN: req.body.ssn,
+            $MONTH: req.body.month
+        },
+        // callback function to run when the query finishes:
+        (err,rows) => {
+            console.log(rows);
+            if (rows.length >0) {
+                res.send(rows);
+            } else {
+                res.send({});
+            }
+        }
+    );
+});
+
+app.use(bodyParser.urlencoded({extended: true}));
+app.post('/transStatement', (req, res) => {
+    console.log(req.body);
+    db.all(
+        'SELECT * FROM SEND_TRANSACTION WHERE SSN = $SSN LIMIT $LIMIT',
+        // parameters to SQL query:
+        {
+            $SSN: req.body.ssn,
+            $LIMIT: req.body.id
+        },
+        // callback function to run when the query finishes:
+        (err,rows) => {
+            console.log(rows);
+            if (rows.length >0) {
+                res.send(rows);
+            } else {
+                res.send({});
+            }
+        }
+    );
+});
+
+app.get('/searchDate/:date1/:date2/:month/:ssn', (req, res) => {
+    const date1 = req.params.date1;
+    const date2 = req.params.date2;
+    const month = req.params.month;
+    const ssn = req.params.ssn;
+    // db.all() fetches all results from an SQL query into the 'rows' variable:
+    console.log('Month: ' + month);
+    console.log('Date1: ' + date1);
+    console.log('Date2: ' + date2);
+    console.log('SSN:'+ ssn);
+    db.all(
+        "SELECT SUM(AMOUNT) AS SUM from SEND_TRANSACTION WHERE $date1 <= date AND $date2 >= date AND SSN = $ssn AND MONTH = $month",{
+            // parameters to SQL query,
+            $date1: date1,
+            $date2: date2,
+            $ssn: ssn,
+            $month: month
+        },
+        // callback function to run when the query finishes:
+        (err, rows) => {
+            console.log(rows);
+            if (rows.length > 0) {
+                res.send(rows[0]);
+            } else {
+                res.send({}); // failed, so return an empty object instead of undefined
+            }
+        }
+    );
+});
+
+app.use(bodyParser.urlencoded({extended: true}));
+app.post('/insertUser', (req, res) => {
+    console.log(req.body);
+    db.all(
+        'INSERT INTO  USER_ACCOUNT VALUES($SSN,$NAME,$AMOUNT,$BAID, $BANUM, 1)',
+        // parameters to SQL query:
+        {
+            $SSN: req.body.ssn,
+            $BAID: req.body.id,
+            $BANUM: req.body.num,
+            $AMOUNT: req.body.amount,
+            $NAME: req.body.name
+        },
+        // callback function to run when the query finishes:
+        // callback function to run when the query finishes:
+        (err) => {
+            if (err) {
+                res.send({message: 'error in app.post(/insertUser)' + err});
+            } else {
+                res.send({message: 'successfully run app.post(/insertUser)' +req.body.ssn});
             }
         }
     );
