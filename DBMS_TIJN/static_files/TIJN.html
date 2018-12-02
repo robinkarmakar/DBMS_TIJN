@@ -1,4 +1,3 @@
-
 <html>
 <head>
   <title>TIJN</title>
@@ -6,7 +5,6 @@
   <script type="text/javascript">
       let i;
       var d = new Date();
-      // jQuery convention for running when the document has been fully loaded:
       $(document).ready(() => {
           $('#readButton').click(() => {
               const requestURL = 'bank/' + $('#nameBox').val();
@@ -14,12 +12,12 @@
               $.ajax({
                   url: requestURL,
                   type: 'GET',
-                  dataType: 'json', // this URL returns data in JSON format
+                  dataType: 'json',
                   success: (data) => {
                       console.log('You received some data!', data);
                       let elements = $();
                       if (data) {
-                          $('#status').html('Successfully fetched data at URL: ' + requestURL);
+                          $('#status').html('Success: ' + requestURL);
                           for (i = 0; i < data.length; i++) {
                               elements = elements.add('<div>Bank ID is ' + data[i].BankID + ' and Bank Number is ' + data[i].BANumber + '</div>');
                           }
@@ -43,9 +41,9 @@
           });
           $('#insertButton').click(() => {
               $.ajax({
-                  // all URLs are relative to http://localhost:3000/
+                  
                   url: 'bank',
-                  type: 'POST', // <-- this is POST, not GET
+                  type: 'POST', 
                   data: {
                       name: $('#insertNameBox').val(),
                       id: $('#insertIdBox').val()
@@ -57,9 +55,9 @@
           });
           $('#removeUserBank').click(() => {
               $.ajax({
-                  // all URLs are relative to http://localhost:3000/
+                  
                   url: 'bankRemove',
-                  type: 'POST', // <-- this is POST, not GET
+                  type: 'POST', 
                   data: {
                       name: $('#RnameBox').val(),
                       ssn: $('#SSNBox').val()
@@ -71,9 +69,9 @@
           });
           $('#addUserBank').click(() => {
               $.ajax({
-                  // all URLs are relative to http://localhost:3000/
+                  
                   url: 'bankAdd',
-                  type: 'POST', // <-- this is POST, not GET
+                  type: 'POST', 
                   data: {
                       id: $('#BankID').val(),
                       number: $('#BANumber').val(),
@@ -87,9 +85,9 @@
           });
           $('#removeUserPhone').click(() => {
               $.ajax({
-                  // all URLs are relative to http://localhost:3000/
+                  
                   url: 'removeUserPhone',
-                  type: 'POST', // <-- this is POST, not GET
+                  type: 'POST', 
                   data: {
                       ssn: $('#SSNBox3').val()
                   },
@@ -100,9 +98,9 @@
           });
           $('#addUserPhone').click(() => {
               $.ajax({
-                  // all URLs are relative to http://localhost:3000/
+                  
                   url: 'addUserPhone',
-                  type: 'POST', // <-- this is POST, not GET
+                  type: 'POST', 
                   data: {
                       ssn: $('#SSNBox4').val(),
                       phone: $('#APnameBox').val()
@@ -113,31 +111,33 @@
               });
           });
           $('#getUserPhones').click(() => {
+              let elements = $();
               const requestURL = 'getUserPhone/' + $('#SSN').val();
               console.log('making ajax request to:', requestURL);
               $.ajax({
-                  // all URLs are relative to http://localhost:3000/
+                  
                   url: requestURL,
                   type: 'GET',
                   dataType: 'json',
                   success: (data) => {
                       console.log('You received some data!', data);
                       if (data) {
-                          $('#status').html('Successfully fetched data at URL: ' + requestURL);
-                          $('#idDiv').html('Phone Number is ' + data[0].Identifier);
+                          $('#status').html('Success: ' + requestURL);
+                          elements = elements.add('<div>Phone Number is ' + data[0].Identifier+ '</div>');
                       } else {
                           $('#status').html('Error: could not find user at URL: ' + requestURL);
-                          // clear the display
-                          $('#idDiv').html('');
+                          
                       }
+                      $('body').append(elements);
+
                   }
               });
           });
           $('#removeUserEmail').click(() => {
               $.ajax({
-                  // all URLs are relative to http://localhost:3000/
+                  
                   url: 'removeUserEmail',
-                  type: 'POST', // <-- this is POST, not GET
+                  type: 'POST', 
                   data: {
                       ssn: $('#SSNBox5').val(),
                       Email: $('#REnameBox').val()
@@ -149,9 +149,9 @@
           });
           $('#addUserEmail').click(() => {
               $.ajax({
-                  // all URLs are relative to http://localhost:3000/
+                  
                   url: 'addUserEmail',
-                  type: 'POST', // <-- this is POST, not GET
+                  type: 'POST', 
                   data: {
                       ssn: $('#SSNBox6').val(),
                       email: $('#AEnameBox').val()
@@ -160,81 +160,97 @@
                       $('#status').html(data.message);
                   }
               });
-
           });
           $('#getUserEmails').click(() => {
+              let elements = $();
               const requestURL = 'getUserEmail/' + $('#SSN2').val();
               console.log('making ajax request to:', requestURL);
               $.ajax({
-                  // all URLs are relative to http://localhost:3000/
+                  
                   url: requestURL,
                   type: 'GET',
                   dataType: 'json',
                   success: (data) => {
                       console.log('You received some data!', data);
                       if (data) {
-                          $('#status').html('Successfully fetched data at URL: ' + requestURL);
-                          $('#idDiv').html('Email is ' + data[0].Identifier);
+                          $('#status').html('Success: ' + requestURL);
+                          elements = elements.add('<div>Email is ' + data[0].Identifier+ '</div>');
                       } else {
                           $('#status').html('Error: could not find user at URL: ' + requestURL);
-                          // clear the display
-                          $('#idDiv').html('');
+                          
                       }
+                      $('body').append(elements);
+
+                  }
+              });
+          });
+          $('#getUserBalance').click(() => {
+              let elements = $();
+              const requestURL = 'getUserBalance/' + $('#SSNB1').val();
+              console.log('making ajax request to:', requestURL);
+              $.ajax({
+                  url: requestURL,
+                  type: 'GET',
+                  dataType: 'json',
+                  success: (data) => {
+                      console.log('You received some data!', data);
+                      if (data) {
+                          $('#status').html('Success: ' + requestURL);
+                          elements = elements.add('<div>Balance is ' + data[0].Balance+ '</div>');
+                      } else {
+                          $('#status').html('Error: could not find user at URL: ' + requestURL);
+                      }
+                      $('body').append(elements);
+
                   }
               });
           });
           $('#sendButton').click(() => {
               if($('#AmountBx').val() < 300)
-                 $.ajax({
-                  // all URLs are relative to http://localhost:3000/
-                  url: 'sendMoney',
-                  type: 'POST', // <-- this is POST, not GET
-                  data: {
-                      ssn: $('#insertSSNBx').val(),
-                      memo: $('#MemoBx').val(),
-                      name: $('#NameBx').val(),
-                      amount: $('#AmountBx').val(),
-                      identifier: $('#identifier').val(),
-                      yourssn: $('#YourSSN').val(),
-                      date: d.getDate(),
-                      month: d.getMonth()
-
-                  },
-                  success: (data) => {
-                      $('#status').html(data.message);
-                  }
-                });
+                  $.ajax({
+                      
+                      url: 'sendMoney',
+                      type: 'POST', 
+                      data: {
+                          ssn: $('#insertSSNBx').val(),
+                          memo: $('#MemoBx').val(),
+                          amount: $('#AmountBx').val(),
+                          identifier: $('#identifier').val(),
+                          yourssn: $('#YourSSN').val(),
+                          date: d.getDate(),
+                          month: d.getMonth()
+                      },
+                      success: (data) => {
+                          $('#status').html(data.message);
+                      }
+                  });
               else
-                $('#status').html('Try again cannot exceed $300');
-
-
-
-      });
+                  $('#status').html('Try again cannot exceed $300');
+          });
           $('#receiveButton').click(() => {
               let elements = $();
               $.ajax({
-                  // all URLs are relative to http://localhost:3000/
+                  
                   url: 'requestMoney',
-                  type: 'POST', // <-- this is POST, not GET
+                  type: 'POST', 
                   data: {
                       ssn: $('#requestSSN2Bx').val(),
                       memo: $('#insertmemo2Bx').val(),
-                      name: $('#name2Bx').val(),
                       amount: $('#Amount2Bx').val(),
-                      yourssn: $('#YourSSN2').val()
+                      yourssn: $('#YourSSN2').val(),
+                      date: d.getDate()
                   },
                   success: (data) => {
                       if(data[0].RTid) {
                           elements = elements.add('<div>It looks like you have some requests in your queue</div>');
                           for (i = 0; i < data.length; i++) {
-                              elements = elements.add('<div>Request ID: ' + data[i].RTid + ' Amount is: ' + data[i].Amount + ' and requesting SSN ' + data[i].SSN + ' Memo is: ' + data[i].Memo + '</div>');
+                              elements = elements.add('<div>Request ID: ' + data[i].RTid + ' Amount is: ' + data[i].Amount + ' Memo is: ' + data[i].Memo + '</div>');
                           }
                           $('body').append(elements);
                       }
                       else{
                           elements = elements.add('<div>It seems you dont have any pending requests in your queue</div>');
                           $('body').append(elements);
-
                       }
                   }
               });
@@ -244,15 +260,14 @@
               let elements = $();
               console.log('making ajax request to:', requestURL);
               $.ajax({
-                  // all URLs are relative to http://localhost:3000/
+                  
                   url: requestURL,
                   type: 'GET',
                   dataType: 'json',
                   success: (data) => {
                       console.log('You received some data!', data);
                       if (data) {
-                          elements = elements.add('<div>It looks like you have some requests in your queue</div>');
-                          elements = elements.add('<div>SUM for you ' + data[0].SUM+'</div>');
+                          elements = elements.add('<div>SUM of your sent transactions between those dates are $' + data.SUM+'</div>');
                           $('body').append(elements);
                       } else {
                           elements = elements.add('<div>You should try other searching functionalities...</div>');
@@ -266,7 +281,7 @@
               const requestURL = 'statementDate/';
               console.log('making ajax request to:', requestURL);
               $.ajax({
-                  // all URLs are relative to http://localhost:3000/
+                  
                   url: requestURL,
                   type: 'POST',
                   data: {
@@ -276,12 +291,10 @@
                   success: (data) => {
                       console.log('You received some data!', data);
                       if (data) {
-                          elements = elements.add('<div>It looks like you have some requests in your queue</div>');
-                          elements = elements.add('<div>SUM for you ' + data[0].SUM+'</div>');
+                          elements = elements.add('<div>SUM for your sent transactions $' + data[0].SUM+'</div>');
                           $('body').append(elements);
-
                       } else {
-                          elements = elements.add('<div>It seems you dont have any pending requests in your queue</div>');
+                          elements = elements.add('<div>Looks like there is nothing for that date</div>');
                           $('body').append(elements);
                       }
                   }
@@ -292,7 +305,7 @@
               const requestURL = 'statementMonthly/';
               console.log('making ajax request to:', requestURL);
               $.ajax({
-                  // all URLs are relative to http://localhost:3000/
+                  
                   url: requestURL,
                   type: 'POST',
                   data: {
@@ -302,12 +315,10 @@
                   success: (data) => {
                       console.log('You received some data!', data);
                       if (data) {
-                          elements = elements.add('<div>It looks like you have some requests in your queue</div>');
-                          elements = elements.add('<div>SUM for you ' + data[0].SUM+'</div>');
+                          elements = elements.add('<div>SUM: $' + data[0].SUM+'</div>');
                           $('body').append(elements);
-
                       } else {
-                          elements = elements.add('<div>It seems you dont have any pending requests in your queue</div>');
+                          elements = elements.add('<div>Try other search functionalities</div>');
                           $('body').append(elements);
                       }
                   }
@@ -315,10 +326,10 @@
           });
           $('#accountButton').click(() => {
               let elements = $();
-              const requestURL = 'statement/';
+              const requestURL = 'accountVerification/';
               console.log('making ajax request to:', requestURL);
               $.ajax({
-                  // all URLs are relative to http://localhost:3000/
+                  
                   url: requestURL,
                   type: 'POST',
                   data: {
@@ -327,12 +338,11 @@
                   success: (data) => {
                       console.log('You received some data!', data);
                       if (data) {
-                          elements = elements.add('<div>It looks like you have some requests in your queue</div>');
-                          elements = elements.add('<div>SUM for you ' + data[0].SUM+'</div>');
-                          $('body').append(elements);
 
+                          elements = elements.add('<div>Yes account exists!!</div>');
+                          $('body').append(elements);
                       } else {
-                          elements = elements.add('<div>It seems you dont have any pending requests in your queue</div>');
+                          elements = elements.add('<div>It seems that account does not exist</div>');
                           $('body').append(elements);
                       }
                   }
@@ -343,7 +353,7 @@
               const requestURL = 'transStatement/';
               console.log('making ajax request to:', requestURL);
               $.ajax({
-                  // all URLs are relative to http://localhost:3000/
+                  
                   url: requestURL,
                   type: 'POST',
                   data: {
@@ -354,9 +364,8 @@
                       console.log('You received some data!', data);
                       if (data) {
                           for(i = 0; i<data.length; i++)
-                           elements = elements.add('<div>STid: ' + data[i].STid+' Amount: ' + data[i].Amount +' Date: ' + data[i].Date +' Month: ' + data[i].Month + ' Memo: ' + data[i].Memo + ' Cancelled: ' + data[i].Cancelled + ' To: ' + data[i].Identifier + '</div>');
+                              elements = elements.add('<div>STid: ' + data[i].STid+' Amount: ' + data[i].Amount +' Date: ' + data[i].Date +' Month: ' + data[i].Month + ' Memo: ' + data[i].Memo + ' Cancelled: ' + data[i].Cancelled + ' To: ' + data[i].Identifier + '</div>');
                           $('body').append(elements);
-
                       } else {
                           elements = elements.add('<div>It seems you dont have any statements. Try sending a request!</div>');
                           $('body').append(elements);
@@ -366,9 +375,9 @@
           });
           $('#insertUserButton').click(() => {
               $.ajax({
-                  // all URLs are relative to http://localhost:3000/
+                  
                   url: 'insertUser',
-                  type: 'POST', // <-- this is POST, not GET
+                  type: 'POST', 
                   data: {
                       ssn: $('#SocialSecurityNumber').val(),
                       name: $('#Name').val(),
@@ -381,8 +390,7 @@
                   }
               });
           });
-          // define a generic Ajax error handler:
-          // http://api.jquery.com/ajaxerror/
+
           $(document).ajaxError(() => {
               $('#status').html('Error: unknown ajaxError!');
           });
@@ -434,20 +442,24 @@ SSN: <input id="SSN2" type="text" size="20"/>
 <button id="getUserEmails">Get user's emails</button>
 <hr/>
 <hr/>
-Memo: <input id="insertMemoBx" type="text" size="20"/>
+SSN: <input id="SSNB1" type="text" size="20"/>
+<button id="getUserBalance">Get user's Balance</button>
+<hr/>
+<hr/>
+Memo: <input id="MemoBx" type="text" size="20"/>
 SSN: <input id="insertSSNBx" type="text" size="20"/>
-Name: <input id="nameBx" type="text" size="20"/>
 Amount: <input id="AmountBx" type="text" size="20"/>
 Identifier: <input id="identifier" type="text" siz="20"/>
 YOUR SSN: <input id="YourSSN" type="text" size="20"/>
 <button id="sendButton">Send Money</button>
 <hr/>
-Memo: <input id="insertMemo2Bx" type="text" size="20"/>
+<hr/>
+Memo: <input id="insertmemo2Bx" type="text" size="20"/>
 SSN: <input id="requestSSN2Bx" type="text" size="20"/>
-Name: <input id="name2Bx" type="text" size="20"/>
 Amount: <input id="Amount2Bx" type="text" size="20"/>
 YOUR SSN: <input id="YourSSN2" type="text" size="20"/>
 <button id="receiveButton">Request Money</button>
+<hr/>
 <hr/>
 Date1: <input id="Date1" type="text" size="20"/>
 Date2: <input id="Date2" type="text" size="20"/>
@@ -464,11 +476,11 @@ Account: <input id="requestSSN4Bx" type="text" size="20"/>
 Date: (Please input between 0-30): <input id ="dateButton" type ="ext" size = "20"/>
 <button id="statementDateButton">Search Ledger by Date</button>
 <hr/>
+<hr/>
 Account: <input id="requestSSN5Bx" type="text" size="20"/>
 Month (Please input between 0-11): <input id="monthButton" type="text" size="20"/>
 <button id="statementMonthlyButton">Search Ledger by Month</button>
 <hr/>
-
 <hr/>
 Transaction: <input id="IDBX" type="text" size="20"/>
 SSN: <input id ="requestSSN6Bx" type="text" size="20"/>
@@ -485,4 +497,3 @@ BANumber: <input id="BankNumber" type="text" size="20"/>
 <div id="status"></div>
 </body>
 </html>
-
