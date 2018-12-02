@@ -10,7 +10,7 @@ db.serialize(() => {
     db.run("CREATE TABLE ELECTRONIC_ADDRESS (Identifier TEXT PRIMARY KEY NOT NULL , SSN INT NOT NULL,Type TEXT, Verified NOT NULL,FOREIGN KEY(SSN) REFERENCES USER_ACCOUNT(SSN))");
 
     db.run("CREATE TABLE SEND_TRANSACTION (STid INTEGER PRIMARY KEY AUTOINCREMENT, Amount INT NOT NULL, Date TEXT, Month TEXT, Memo TEXT, Cancelled INT, SSN INT, Identifier TEXT,FOREIGN KEY(SSN) REFERENCES USER_ACCOUNT(SSN), FOREIGN KEY(Identifier) REFERENCES ELECTRONIC_ADDRESS(Identifier))");
-    db.run("CREATE TABLE REQUEST_TRANSACTION (RTid INTEGER PRIMARY KEY AUTOINCREMENT, Amount INT NOT NULL, Date TEXT, Memo TEXT, SSN INT, FOREIGN KEY(SSN) REFERENCES USER_ACCOUNT(SSN))");
+    db.run("CREATE TABLE REQUEST_TRANSACTION (RTid INTEGER PRIMARY KEY AUTOINCREMENT, Amount INT NOT NULL, Date TEXT, Memo TEXT, SSN INT, Identifier TEXT, FOREIGN KEY(SSN) REFERENCES USER_ACCOUNT(SSN),FOREIGN KEY(Identifier) REFERENCES ELECTRONIC_ADDRESS(Identifier))");
 
     // insert 3 rows of data:
     db.run("INSERT INTO BANK_ACCOUNT VALUES (1, 1)");
@@ -27,19 +27,18 @@ db.serialize(() => {
 
 
     db.run("INSERT INTO ELECTRONIC_ADDRESS VALUES ('6096133150',123456789,'phone',1)");
-    db.run("INSERT INTO ELECTRONIC_ADDRESS VALUES ('robinkarmakar@yahoo.com',123456799,'email',1)");
-    db.run("INSERT INTO ELECTRONIC_ADDRESS VALUES ('karmakar.robin@gmail.com',123456779,'email',1)");
+    db.run("INSERT INTO ELECTRONIC_ADDRESS VALUES ('xi@yahoo.com',123456799,'email',1)");
+    db.run("INSERT INTO ELECTRONIC_ADDRESS VALUES ('r.r@gmail.com',123456779,'email',1)");
 
-    db.run("INSERT INTO REQUEST_TRANSACTION(Amount,Date,Memo,SSN) VALUES (20,'Jan 7','owe me',123456789)");
-    db.run("INSERT INTO REQUEST_TRANSACTION(Amount,Date,Memo,SSN) VALUES (20,'Jan 8','here',123456789)");
-    db.run("INSERT INTO REQUEST_TRANSACTION(Amount,Date,Memo,SSN) VALUES (30,'Jan 9','test',123456789)");
+    db.run("INSERT INTO REQUEST_TRANSACTION(Amount,Date,Memo,SSN, Identifier) VALUES (20,'7','owe me',123456789,'xi@yahoo.com')");
+    db.run("INSERT INTO REQUEST_TRANSACTION(Amount,Date,Memo,SSN, Identifier) VALUES (20,'8','here',123456789,'xi@yahoo.com')");
+    db.run("INSERT INTO REQUEST_TRANSACTION(Amount,Date,Memo,SSN, Identifier) VALUES (30,'9','test',123456789,'xi@yahoo.com')");
 
-    db.run("INSERT INTO SEND_TRANSACTION(Amount,Date,Month,Memo,cancelled,SSN,Identifier) VALUES (20,'5','5','hello',1,123456789,'6096133150')");
-    db.run("INSERT INTO SEND_TRANSACTION(Amount,Date,Month,Memo,cancelled,SSN,Identifier) VALUES (200,'5','5','greetings',0,123456789,'6096133150')");
-    db.run("INSERT INTO SEND_TRANSACTION(Amount,Date,Month,Memo,cancelled,SSN,Identifier) VALUES (300,'6','6','njit',0,123456789,'6096133150')");
+    db.run("INSERT INTO SEND_TRANSACTION(Amount,Date,Month,Memo,cancelled,SSN,Identifier) VALUES (20,'5','5','hello',1,123456789,'xi@yahoo.com')");
+    db.run("INSERT INTO SEND_TRANSACTION(Amount,Date,Month,Memo,cancelled,SSN,Identifier) VALUES (200,'5','5','greetings',0,123456799,'6096133150')");
+    db.run("INSERT INTO SEND_TRANSACTION(Amount,Date,Month,Memo,cancelled,SSN,Identifier) VALUES (299,'6','6','njit',0,123456779,'6096133150')");
 
-
-
+    db.run("CREATE TRIGGER 'upd_balance_' AFTER INSERT ON USER_ACCOUNT FOR EACH ROW BEGIN UPDATE USER_ACCOUNT SET BALANCE = (SELECT SUM(Amount) FROM SEND_TRANSACTION WHERE SSN = NEW.SSN) + NEW.BALANCE; END")
     console.log('successfully created the bank table in TIJN.db');
 
     // print them out to confirm their contents:;
@@ -59,7 +58,7 @@ db.serialize(() => {
 
 
     db.each("SELECT RTid, Amount, Date ,Memo,SSN FROM REQUEST_TRANSACTION", (err, row) => {
-        console.log(row.RTid + ": " +row.Amount+": "+ row.Date + ": " + row.Memo+ ": " + row.SSN );
+        console.log(row.RTid + ": " +row.Amount+": "+ row.Date + ": " + row.Memo+ ": " + row.SSN + ":" + row.Identifier);
     });
 
     db.each("SELECT STid, Amount,Date,Memo,Cancelled,SSN,Identifier FROM SEND_TRANSACTION", (err, row) => {
